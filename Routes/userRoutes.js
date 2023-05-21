@@ -15,10 +15,10 @@ router.post("/forgotpassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
 
 //protect middleware -- protect all routes after this middleware
-router.use(authController.protect);
+//router.use(authController.protect);
 
 //get all users
-router.get("/", authController.restrictTo("user"), userController.getAllUsers);
+router.get("/", userController.getAllUsers);
 
 //exporting
 module.exports = router;
