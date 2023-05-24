@@ -5,15 +5,13 @@ const cors = require("cors");
 const app = express(); //created app variable and assigning the result of calling express
 
 //cors
-//app.use(cors());
-
 app.use(
   cors({
     "Access-Control-Allow-Origin": "*",
-    //origin: "http://localhost:3000",
   })
 );
 
+//importing error handling
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./Controllers/errorController");
 
