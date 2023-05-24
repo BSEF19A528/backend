@@ -47,7 +47,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-//Get All Users
+// //Get All Users
 exports.getAllUsers = async (req, res, next) => {
   //creating user
   const newUser = await User.find();
