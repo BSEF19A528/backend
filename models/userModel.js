@@ -41,10 +41,11 @@ const userSchema = new mongoose.Schema({
   profilePic: String,
   gender: {
     type: String,
-    enum: ["male", "female", "other"],
+    enum: ["Male", "Female", "Other"],
   },
   dob: Date,
   phone: String,
+  country: String,
   userdescription: String,
   passwordChangedAt: Date,
   passwordResetToken: String,

@@ -24,7 +24,6 @@ const courseSchema = new mongoose.Schema({
   difficultylevel: {
     type: String,
   },
-  language: String,
   sections: [
     {
       sectionName: String,
