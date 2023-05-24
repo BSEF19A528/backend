@@ -1,62 +1,49 @@
-// const mongoose = require("mongoose");
-// const validator = require("validator");
-// const bcrypt = require("bcryptjs");
-// const crypto = require("crypto");
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
-// const userSchema = new mongoose.Schema({
-//   name: {
-//     type: String,
-//     required: [true, "Please tell us your name!"],
-//   },
-//   email: {
-//     type: String,
-//     required: [true, "Please provide your email"],
-//     unique: true,
-//     lowercase: true,
-//     validate: [validator.isEmail, "Please provide valid email!"],
-//   },
-//   role: {
-//     type: String,
-//     required: true,
-//     enum: ["user", "teacher", "admin"],
-//   },
-//   password: {
-//     type: String,
-//     required: [true, "Please provide a password!"],
-//     minlength: 5,
-//     maxlength: 10,
-//     select: false,
-//   },
-//   cpassword: {
-//     type: String,
-//     required: [true, "Please confirm your password!"],
-//     validate: {
-//       validator: function (el) {
-//         //only works for "create" and "save" command
-//         return el === this.password; //Ahmar123 === Ahmar123
-//       },
-//       message: "Passwords are not the same!",
-//     },
-//   },
-//   profilePic: String,
-//   gender: {
-//     type: String,
-//     enum: ["male", "female", "other"],
-//   },
-//   dob: Date,
-//   phone: String,
-//   userdescription: String,
-//   passwordChangedAt: Date,
-//   passwordResetToken: String,
-//   passwordResetExpires: Date,
-//   active: {
-//     type: "boolean",
-//     default: true,
-//     select: false,
-//   },
-// });
+const courseSchema = new mongoose.Schema({
+  courseName: {
+    type: String,
+    required: [true, "Please Enter Course Name!"],
+  },
+  shortDescription: {
+    type: String,
+    required: [true, "Please Enter Description!"],
+  },
+  selectLogo: String,
+  selectImage: String,
+  solvedExample: {
+    type: String,
+    required: [true, "Please Enter Solved Example!"],
+  },
+  courseDuration: {
+    type: String,
+  },
+  difficultylevel: {
+    type: String,
+  },
+  language: String,
+  sections: [
+    {
+      sectionName: String,
+      videoData: [{ videoName: String, videoLink: String }],
+      quiz: [
+        {
+          question: String,
+          option1: String,
+          option2: String,
+          option3: String,
+          option4: String,
+          answer: String,
+        },
+      ],
+    },
+  ],
+});
 
-// //model
-// const User = mongoose.model("User", userSchema);
+//model
+const Course = mongoose.model("Course", courseSchema);
 
-// module.exports = User;
+module.exports = Course;
