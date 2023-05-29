@@ -22,8 +22,10 @@ const courseRouter = require("./Routes/courseRoutes");
 //GLOBAL MIDDLEWARES
 
 //Body parser -- reading data from body into req.body
-//app.use(express.json()); //limiting body size to 10KB.
 app.use(express.json({ limit: "50mb" }));
+
+//middleware for serving static files
+app.use("/public/img/users", express.static("public/img/users"));
 
 //morgan middleware
 if (process.env.NODE_ENV === "development") {

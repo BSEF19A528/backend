@@ -107,7 +107,6 @@ exports.getAllUsers = async (req, res, next) => {
   //creating user
   const newUser = await User.find();
 
-  //response
   res.status(200).json({
     //JSEND FORMAT
     status: "success",
