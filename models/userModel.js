@@ -38,7 +38,10 @@ const userSchema = new mongoose.Schema({
       message: "Passwords are not the same!",
     },
   },
-  profilePic: String,
+  profilePic: {
+    type: String,
+    default: "default.jpg",
+  },
   gender: {
     type: String,
     enum: ["Male", "Female", "Other"],

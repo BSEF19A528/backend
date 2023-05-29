@@ -40,6 +40,24 @@ const courseSchema = new mongoose.Schema({
       ],
     },
   ],
+  teacher: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "User",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: true,
+  },
+});
+
+//populating courses
+courseSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "teacher",
+    select: "-__v -passwordChangedAt",
+  });
+  next();
 });
 
 //model

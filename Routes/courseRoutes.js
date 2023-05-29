@@ -13,6 +13,8 @@ router.post(
   "/createCourse",
   authController.protect,
   authController.restrictTo("teacher"),
+  courseController.uploadCourseImages,
+  courseController.resizeCourseImages,
   courseController.createCourse
 );
 
@@ -20,7 +22,7 @@ router.post(
 router.get(
   "/viewCourse",
   authController.protect,
-  //authController.restrictTo("teacher"),
+  authController.restrictTo("teacher"),
   courseController.viewCourse
 );
 
