@@ -35,10 +35,10 @@ exports.resizeCourseImages = catchAsync(async (req, res, next) => {
 
   //1) selectLogo
 
-  req.body.selectLogo = `course-${req.user.id}-${Date.now()}-logo.jpeg`;
+  req.body.selectLogo = `course-${req.user.id}-${Date.now()}-logo.png`;
   await sharp(req.files.selectLogo[0].buffer)
     .resize(2000, 1333)
-    .toFormat("jpeg")
+    .toFormat("png")
     .jpeg({ quality: 90 })
     .toFile(`public/img/courses/${req.body.selectLogo}`);
 
@@ -69,14 +69,9 @@ exports.createCourse = catchAsync(async (req, res, next) => {
     sections: JSON.parse(req.body.sections),
   });
 
-  // req.body
-
-  console.log("okay");
-  console.log(newCourse);
   res.status(200).json({
     //JSEND FORMAT
     status: "success",
-    //sending token back to client
     data: {
       course: newCourse,
     },
@@ -94,7 +89,6 @@ exports.viewTeacherCourses = catchAsync(async (req, res, next) => {
     res.status(200).json({
       //JSEND FORMAT
       status: "success",
-      //sending token back to client
       data: newCourse,
     });
 });
@@ -109,7 +103,22 @@ exports.viewAllCourses = catchAsync(async (req, res, next) => {
     res.status(200).json({
       //JSEND FORMAT
       status: "success",
-      //sending token back to client
-      //data: [(course: newCourse)],
+      data: newCourse,
     });
+});
+
+exports.viewOneCourse = catchAsync(async (req, res, next) => {
+  const newCourse = await Course.findById(req.params.id);
+
+  //error handling code
+  if (!newCourse) {
+    return next(new AppError("No Course found with that ID", 404));
+  }
+
+  //response
+  res.status(200).json({
+    //JSEND FORMAT
+    status: "success",
+    data: newCourse,
+  });
 });

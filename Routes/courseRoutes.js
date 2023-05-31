@@ -29,5 +29,8 @@ router.get(
 //get all courses
 router.get("/viewAllCourses", courseController.viewAllCourses);
 
+//get all courses
+router.get("/viewOneCourse/:id", courseController.viewOneCourse);
+
 //exporting
 module.exports = router;
