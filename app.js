@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express(); //created app variable and assigning the result of calling express
 
@@ -23,9 +24,13 @@ const courseRouter = require("./Routes/courseRoutes");
 
 //Body parser -- reading data from body into req.body
 app.use(express.json({ limit: "50mb" }));
+// app.use(bodyParser.json());
+
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 //middleware for serving static files
 app.use("/public/img/users", express.static("public/img/users"));
+app.use("/public/img/courses", express.static("public/img/courses"));
 
 //morgan middleware
 if (process.env.NODE_ENV === "development") {

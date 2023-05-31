@@ -18,13 +18,16 @@ router.post(
   courseController.createCourse
 );
 
-//get course
+//get teacher course
 router.get(
-  "/viewCourse",
+  "/viewTeacherCourses",
   authController.protect,
   authController.restrictTo("teacher"),
-  courseController.viewCourse
+  courseController.viewTeacherCourses
 );
+
+//get all courses
+router.get("/viewAllCourses", courseController.viewAllCourses);
 
 //exporting
 module.exports = router;

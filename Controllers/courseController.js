@@ -57,10 +57,22 @@ exports.resizeCourseImages = catchAsync(async (req, res, next) => {
 //create Course
 exports.createCourse = catchAsync(async (req, res, next) => {
   //creating course
-  const newCourse = await Course.create(req.body);
+  const newCourse = await Course.create({
+    courseName: req.body.courseName,
+    shortDescription: req.body.shortDescription,
+    selectLogo: req.body.selectLogo,
+    selectImage: req.body.selectImage,
+    solvedExample: req.body.solvedExample,
+    courseDuration: req.body.courseDuration,
+    difficultylevel: req.body.difficultylevel,
+    teacher: req.body.teacher,
+    sections: JSON.parse(req.body.sections),
+  });
 
+  // req.body
+
+  console.log("okay");
   console.log(newCourse);
-
   res.status(200).json({
     //JSEND FORMAT
     status: "success",
@@ -71,7 +83,7 @@ exports.createCourse = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.viewCourse = catchAsync(async (req, res, next) => {
+exports.viewTeacherCourses = catchAsync(async (req, res, next) => {
   //creating course
   if (!req.body.user) req.body.user = req.user.id;
   const newCourse = await Course.find({ teacher: req.body.user });
@@ -83,8 +95,21 @@ exports.viewCourse = catchAsync(async (req, res, next) => {
       //JSEND FORMAT
       status: "success",
       //sending token back to client
-      data: {
-        course: newCourse,
-      },
+      data: newCourse,
+    });
+});
+
+exports.viewAllCourses = catchAsync(async (req, res, next) => {
+  //creating course
+  const newCourse = await Course.find();
+
+  if (!newCourse) {
+    return next(new AppError("No Courses Available!", 404));
+  } else
+    res.status(200).json({
+      //JSEND FORMAT
+      status: "success",
+      //sending token back to client
+      //data: [(course: newCourse)],
     });
 });
