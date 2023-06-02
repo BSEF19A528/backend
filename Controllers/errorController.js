@@ -10,7 +10,7 @@ const handleCastErrorDB = (err) => {
 //handling Duplicate Fields
 const handleDuplicateFieldsDB = (err) => {
   const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
-  const message = `Duplicate Field Value: ${value}. Please use another value!`;
+  const message = ` ${value}. Already Taken!. Please use another Email!`;
   return new AppError(message, 400);
 };
 

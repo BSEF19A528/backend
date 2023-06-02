@@ -14,19 +14,24 @@ router.post("/login", authController.login);
 router.post("/forgotpassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
 
-//protect middleware -- protect all routes after this middleware
-router.use(authController.protect);
+//update password
+router.patch(
+  "/updateMyPassword",
+  authController.protect,
+  authController.updatePassword
+);
 
-//update me
+//update current user
 router.patch(
   "/updateMe",
+  authController.protect,
   userController.uploadUserPhoto,
   userController.resizeUserPhoto,
   userController.updateMe
 );
 
 //get all users
-router.get("/", userController.getAllUsers);
+router.get("/", authController.protect, userController.getAllUsers);
 
 //exporting
 module.exports = router;

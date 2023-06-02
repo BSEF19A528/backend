@@ -40,6 +40,7 @@ exports.resizeCourseImages = catchAsync(async (req, res, next) => {
     .resize(2000, 1333)
     .toFormat("png")
     .jpeg({ quality: 90 })
+    .flatten({ background: { r: 255, g: 255, b: 255 } })
     .toFile(`public/img/courses/${req.body.selectLogo}`);
 
   //2) selectImage

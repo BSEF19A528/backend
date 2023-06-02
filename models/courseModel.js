@@ -6,17 +6,17 @@ const crypto = require("crypto");
 const courseSchema = new mongoose.Schema({
   courseName: {
     type: String,
-    // required: [true, "Please Enter Course Name!"],
+    required: [true, "Please Enter Course Name!"],
   },
   shortDescription: {
     type: String,
-    // required: [true, "Please Enter Description!"],
+    required: [true, "Please Enter Description!"],
   },
   selectLogo: String,
   selectImage: String,
   solvedExample: {
     type: String,
-    // required: [true, "Please Enter Solved Example!"],
+    required: [true, "Please Enter Solved Example!"],
   },
   courseDuration: {
     type: String,
@@ -44,10 +44,20 @@ const courseSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: "User",
   },
+  students: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now(),
     select: true,
+  },
+  status: {
+    type: String,
+    default: "pending",
   },
 });
 

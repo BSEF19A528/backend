@@ -83,7 +83,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(" ")[1];
   }
-  //console.log(token);
+  // console.log(token);
 
   //if token don't exist, print error
   if (!token) {
@@ -210,5 +210,28 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   //3) update passwordChangedAt property for the user.
 
   //4) log the user in and send JWT
+  createSendToken(user, 200, res);
+});
+
+//updatepassword
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //1) get user from collection
+
+  const user = await User.findById(req.user.id).select("+password");
+
+  //2) check if posted current password is correct.
+  if (
+    !user ||
+    !(await user.correctPassword(req.body.passwordCurrent, user.password)) //compare the passwordCurrent with the password stored in db
+  ) {
+    return next(new AppError("Your current Password is wrong", 401));
+  }
+
+  //3) if so , update user
+  user.password = req.body.password;
+  user.cpassword = req.body.cpassword;
+
+  await user.save();
+  //4) log user in , send JWT
   createSendToken(user, 200, res);
 });
