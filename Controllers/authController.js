@@ -46,10 +46,79 @@ exports.signup = catchAsync(async (req, res, next) => {
     phone: req.body.phone,
     profilePic: req.body.profilePic,
     userdescription: req.body.userdescription,
-    active: req.body.active,
   });
-  //creating TOKEN
-  createSendToken(newUser, 201, res);
+  //generate the random verify token
+  const verifyToken = newUser.createEmailVerifyToken();
+
+  //we are trying to save document but didn't provide the fields which we marked as required. so to avoid that will deactivate all the validations.
+  await newUser.save({ validateBeforeSave: false });
+
+  //send it to the user email
+  const resetURL = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/users/verifyemail/${verifyToken}`;
+
+  //message
+  const message = `Click Here to verify your email. = ${resetURL}.`;
+
+  try {
+    //awaiting the email function
+    await sendEmail({
+      email: newUser.email,
+      subject: "Email Verification( valid for 10 minutes)",
+      message,
+    });
+
+    //sending some response
+    res.status(200).json({
+      status: "success",
+      message: "Email Verification has been send to you!",
+    });
+  } catch (err) {
+    //in case of error while sending email we modifies both properties to undefined.
+    newUser.EmailVerifyToken = undefined;
+    newUser.EmailVerifyExpires = undefined;
+    //as we only modified now will save
+    await newUser.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError("There was a problem while sending the email", 500)
+    );
+  }
+});
+
+//verifyemail
+exports.verifyemail = catchAsync(async (req, res, next) => {
+  //1) get user based on token
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token) //coming from url (:token)
+    .digest("hex");
+
+  //getting user from db based on the token
+  const user = await User.findOne({
+    EmailVerifyToken: hashedToken,
+    EmailVerifyExpires: { $gt: Date.now() },
+  });
+
+  //2) setting verified to true only if token has not expired and user exist.
+  if (!user) {
+    return next(new AppError("Token is invalid or Expired!", 400));
+  }
+
+  //updating the password in the database.
+  user.verified = true;
+  //Deleting passwordResetToken and passwordResetExpires:
+  user.EmailVerifyToken = undefined;
+  user.EmailVerifyExpires = undefined;
+  //As it just got modified only so now will also save it.
+  await user.save({ validateBeforeSave: false });
+
+  //sending some response
+  res.status(200).json({
+    status: "success",
+    message: "Email Verified",
+  });
 });
 
 //Login
@@ -67,6 +136,49 @@ exports.login = catchAsync(async (req, res, next) => {
   //if user don't exit and password not matched
   if (!user || !(await user.correctPassword(password, user.password))) {
     next(new AppError("Incorrect Email or Password!", 401));
+  }
+
+  //checking if email verified or not.
+  if (user.verified == false) {
+    //generate the random verify token
+    const verifyToken = user.createEmailVerifyToken();
+
+    //we are trying to save document but didn't provide the fields which we marked as required. so to avoid that will deactivate all the validations.
+    await user.save({ validateBeforeSave: false });
+
+    //send it to the user email
+    const resetURL = `${req.protocol}://${req.get(
+      "host"
+    )}/api/v1/users/verifyemail/${verifyToken}`;
+
+    //message
+    const message = `Click Here to verify your email. = ${resetURL}.`;
+
+    try {
+      //awaiting the email function
+      await sendEmail({
+        email: user.email,
+        subject: "Email Verification( valid for 10 minutes)",
+        message,
+      });
+
+      //sending some response
+      res.status(200).json({
+        status: "success",
+        message:
+          "Please verify your email Before Login. Email has sent to your account!",
+      });
+    } catch (err) {
+      //in case of error while sending email we modifies both properties to undefined.
+      user.EmailVerifyToken = undefined;
+      user.EmailVerifyExpires = undefined;
+      //as we only modified now will save
+      await user.save({ validateBeforeSave: false });
+
+      return next(
+        new AppError("There was a problem while sending the email", 500)
+      );
+    }
   }
 
   //3) If everything ok, send token to client.

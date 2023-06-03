@@ -26,6 +26,30 @@ router.get(
   courseController.viewTeacherCourses
 );
 
+//get admin course
+router.get(
+  "/viewAdminCourses",
+  authController.protect,
+  authController.restrictTo("admin"),
+  courseController.viewAdminCourses
+);
+
+//set course status
+router.post(
+  "/adminCourseDecision/:id",
+  authController.protect,
+  authController.restrictTo("admin"),
+  courseController.adminCourseDecision
+);
+
+//delete course
+router.delete(
+  "/deleteCourse/:id",
+  authController.protect,
+  authController.restrictTo("teacher"),
+  courseController.deleteCourse
+);
+
 //get all courses
 router.get("/viewAllCourses", courseController.viewAllCourses);
 

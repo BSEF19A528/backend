@@ -53,10 +53,16 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  EmailVerifyToken: String,
+  EmailVerifyExpires: Date,
   active: {
     type: "boolean",
     default: true,
     select: false,
+  },
+  verified: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -103,7 +109,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-//instance method for reset token generation.
+//instance method for reset token generation for forgot password.
 userSchema.methods.createPasswordResetToken = function () {
   //creating reser token
   const resetToken = crypto.randomBytes(32).toString("hex");
@@ -117,6 +123,23 @@ userSchema.methods.createPasswordResetToken = function () {
 
   //setting reset token expires time
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; //10 minutes to reset password
+
+  //Then we need to get plainText resetToken so that can be send back as an email to user
+  return resetToken;
+};
+
+//instance method for reset token generation for email verify.
+userSchema.methods.createEmailVerifyToken = function () {
+  //creating reser token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  //hashing reset token
+  this.EmailVerifyToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  //setting reset token expires time
+  this.EmailVerifyExpires = Date.now() + 10 * 60 * 1000; //10 minutes to verify email
 
   //Then we need to get plainText resetToken so that can be send back as an email to user
   return resetToken;

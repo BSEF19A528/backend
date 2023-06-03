@@ -67,7 +67,7 @@ exports.createCourse = catchAsync(async (req, res, next) => {
     courseDuration: req.body.courseDuration,
     difficultylevel: req.body.difficultylevel,
     teacher: req.body.teacher,
-    sections: JSON.parse(req.body.sections),
+    //sections: JSON.parse(req.body.sections),
   });
 
   res.status(200).json({
@@ -79,8 +79,9 @@ exports.createCourse = catchAsync(async (req, res, next) => {
   });
 });
 
+//view Teacher Courses
 exports.viewTeacherCourses = catchAsync(async (req, res, next) => {
-  //creating course
+  //setting teacher id
   if (!req.body.user) req.body.user = req.user.id;
   const newCourse = await Course.find({ teacher: req.body.user });
 
@@ -94,9 +95,41 @@ exports.viewTeacherCourses = catchAsync(async (req, res, next) => {
     });
 });
 
+//view Admin Courses
+exports.viewAdminCourses = catchAsync(async (req, res, next) => {
+  //query
+  const newCourse = await Course.find({ status: "pending" });
+
+  if (!newCourse) {
+    return next(new AppError("No Course to Approve", 404));
+  } else
+    res.status(200).json({
+      //JSEND FORMAT
+      status: "success",
+      data: newCourse,
+    });
+});
+
+//set Courses status
+exports.adminCourseDecision = catchAsync(async (req, res, next) => {
+  //query
+  const newCourse = await Course.findById(req.params.id);
+
+  if (!newCourse) {
+    return next(new AppError("No course found with that ID", 404));
+  } else newCourse.status = req.body.status;
+  //saving
+  await newCourse.save();
+  res.status(200).json({
+    //JSEND FORMAT
+    status: "success",
+  });
+});
+
+//generic and for students
 exports.viewAllCourses = catchAsync(async (req, res, next) => {
   //creating course
-  const newCourse = await Course.find();
+  const newCourse = await Course.find({ status: "approved" });
 
   if (!newCourse) {
     return next(new AppError("No Courses Available!", 404));
@@ -108,6 +141,7 @@ exports.viewAllCourses = catchAsync(async (req, res, next) => {
     });
 });
 
+//for all
 exports.viewOneCourse = catchAsync(async (req, res, next) => {
   const newCourse = await Course.findById(req.params.id);
 
@@ -122,4 +156,25 @@ exports.viewOneCourse = catchAsync(async (req, res, next) => {
     status: "success",
     data: newCourse,
   });
+});
+
+//For Teacher to delete course
+exports.deleteCourse = catchAsync(async (req, res, next) => {
+  //first getting course based on Id.
+  const course = await Course.findById(req.params.id);
+  if (course.status == "pending" || course.status == "rejected") {
+    //deleting course
+    const doc = await Course.findByIdAndDelete(req.params.id);
+
+    //error handling code
+    if (!doc) {
+      return next(new AppError("No course found with that ID", 404));
+    }
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  } else {
+    return next(new AppError("Approved Course can't be deleted.", 400));
+  }
 });

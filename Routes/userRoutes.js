@@ -10,6 +10,8 @@ const router = express.Router();
 //authController routes
 router.post("/signup", authController.signup);
 router.post("/adminSignup", authController.signup);
+router.patch("/verifyemail/:token", authController.verifyemail);
+
 router.post("/login", authController.login);
 router.post("/forgotpassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
@@ -29,9 +31,6 @@ router.patch(
   userController.resizeUserPhoto,
   userController.updateMe
 );
-
-//get all users
-router.get("/", authController.protect, userController.getAllUsers);
 
 //exporting
 module.exports = router;
