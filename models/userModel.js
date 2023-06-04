@@ -64,6 +64,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  courses: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Course",
+    },
+  ],
 });
 
 //Password Encryption
@@ -144,6 +150,15 @@ userSchema.methods.createEmailVerifyToken = function () {
   //Then we need to get plainText resetToken so that can be send back as an email to user
   return resetToken;
 };
+
+//populating courses
+userSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "courses",
+  });
+
+  next();
+});
 
 //model
 const User = mongoose.model("User", userSchema);

@@ -1,6 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Course = require("../models/courseModel");
+const User = require("../models/userModel");
 const multer = require("multer");
 const sharp = require("sharp");
 
@@ -209,3 +210,33 @@ exports.updateCourse = catchAsync(async (req, res, next) => {
     return next(new AppError("Approved Course can't be updated.", 400));
   }
 });
+
+//for enrolling course
+// exports.enrollCourse = catchAsync(async (req, res, next) => {
+//   //Getting id from body
+//   const UserID = req.body.userid;
+//   const CourseID = req.body.courseid;
+
+//   //Finding course based on id.
+//   const course = await Course.findById(CourseID);
+
+//   if (!course) {
+//     return next(new AppError("No Course found with that ID", 404));
+//   }
+
+//   course.students = UserID;
+//   await course.save({ validateBeforeSave: false });
+
+//   //Finding user based on id.
+//   const user = await User.findById(UserID);
+
+//   user.courses = CourseID;
+//   await user.save({ validateBeforeSave: false });
+
+//   //response
+//   res.status(200).json({
+//     //JSEND FORMAT
+//     status: "success",
+//     data: course,
+//   });
+// });
