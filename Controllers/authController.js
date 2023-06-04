@@ -57,14 +57,20 @@ exports.signup = catchAsync(async (req, res, next) => {
   const resetURL = `${process.env.frontend_URL}/api/v1/users/verifyemail/${verifyToken}`;
 
   //message
-  const message = `Click Here to verify your email. = ${resetURL}.`;
+  //`Click Here to verify your email. = ${resetURL}.`
+  const emailTemplate = `<div>
+  <h1>Welcome to DevLearn!</h1>
+  <p>Please verify your email address by clicking the button below:</p>
+  <a href="${resetURL}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none;">Verify Email</a>
+</div>
+`;
 
   try {
     //awaiting the email function
     await sendEmail({
       email: newUser.email,
       subject: "Email Verification( valid for 10 minutes)",
-      message,
+      emailTemplate,
     });
 
     //sending some response
