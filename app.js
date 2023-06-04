@@ -24,6 +24,7 @@ const courseRouter = require("./Routes/courseRoutes");
 
 //Body parser -- reading data from body into req.body
 app.use(express.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //middleware for serving static files
 app.use("/public/img/users", express.static("public/img/users"));

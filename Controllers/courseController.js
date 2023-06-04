@@ -30,7 +30,7 @@ exports.uploadCourseImages = upload.fields([
 
 //resize image middleware
 exports.resizeCourseImages = catchAsync(async (req, res, next) => {
-  console.log(req.files);
+  //console.log(req.files);
   if (!req.files.selectLogo || !req.files.selectImage) return next();
 
   //1) selectLogo
@@ -176,5 +176,36 @@ exports.deleteCourse = catchAsync(async (req, res, next) => {
     });
   } else {
     return next(new AppError("Approved Course can't be deleted.", 400));
+  }
+});
+
+//updating course only by teacher
+exports.updateCourse = catchAsync(async (req, res, next) => {
+  //first getting course based on Id.
+  const course = await Course.findById(req.params.id);
+
+  if (course.status == "pending" || course.status == "rejected") {
+    const doc = await Course.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    //error handling code
+    if (!doc) {
+      return next(new AppError("No Course found with that ID", 404));
+    }
+
+    doc.status = "pending";
+    await doc.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      //JSEND FORMAT
+      status: "success",
+      data: {
+        data: doc,
+      },
+    });
+  } else {
+    return next(new AppError("Approved Course can't be updated.", 400));
   }
 });

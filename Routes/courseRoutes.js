@@ -34,12 +34,22 @@ router.get(
   courseController.viewAdminCourses
 );
 
-//set course status
+//set course status by admin
 router.post(
   "/adminCourseDecision/:id",
   authController.protect,
   authController.restrictTo("admin"),
   courseController.adminCourseDecision
+);
+
+//update course
+router.patch(
+  "/updateCourse/:id",
+  authController.protect,
+  authController.restrictTo("teacher"),
+  courseController.uploadCourseImages,
+  courseController.resizeCourseImages,
+  courseController.updateCourse
 );
 
 //delete course
