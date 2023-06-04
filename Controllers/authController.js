@@ -145,9 +145,7 @@ exports.login = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     //send it to the user email
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/users/verifyemail/${verifyToken}`;
+    const resetURL = `${process.env.frontend_URL}/api/v1/users/verifyemail/${verifyToken}`;
 
     //message
     const message = `Click Here to verify your email. = ${resetURL}.`;
