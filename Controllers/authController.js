@@ -162,7 +162,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
       //sending some response
       res.status(200).json({
-        status: "success",
+        status: "tokensuccess",
         message:
           "Please verify your email Before Login. Email has sent to your account!",
       });
