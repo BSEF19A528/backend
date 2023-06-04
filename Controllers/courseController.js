@@ -67,7 +67,7 @@ exports.createCourse = catchAsync(async (req, res, next) => {
     courseDuration: req.body.courseDuration,
     difficultylevel: req.body.difficultylevel,
     teacher: req.body.teacher,
-    //sections: JSON.parse(req.body.sections),
+    sections: JSON.parse(req.body.sections),
   });
 
   res.status(200).json({
