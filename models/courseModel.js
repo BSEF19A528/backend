@@ -70,15 +70,6 @@ courseSchema.pre(/^find/, function (next) {
   next();
 });
 
-// //populating students
-// courseSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: "students",
-//     select: "-__v -passwordChangedAt",
-//   });
-//   next();
-// });
-
 //model
 const Course = mongoose.model("Course", courseSchema);
 

@@ -267,14 +267,18 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   )}/api/users/resetPassword/${resetToken}`;
 
   //message
-  const message = `Forgot your password? Submit a PATCH request with your new password and confirm Password to ${resetURL} . If you didn't forget the password then please ignore it.`;
-
+  const emailTemplate = `<div>
+  <h1>Welcome to DevLearn!</h1>
+  <p>Please reset your password by clicking the button below:</p>
+  <a href="${resetURL}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none;">Reset Password</a>
+</div>
+`;
   try {
     //awaiting the email function
     await sendEmail({
       email: user.email,
       subject: "Your Password reset token ( valid for 10 minutes)",
-      message,
+      emailTemplate,
     });
 
     //sending some response
@@ -325,8 +329,14 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   //3) update passwordChangedAt property for the user.
 
-  //4) log the user in and send JWT
-  createSendToken(user, 200, res);
+  // //4) log the user in and send JWT
+  // createSendToken(user, 200, res);
+
+  //sending some response
+  res.status(200).json({
+    status: "success",
+    message: "Password Reset Successfully!",
+  });
 });
 
 //updatepassword

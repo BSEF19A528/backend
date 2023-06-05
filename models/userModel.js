@@ -151,14 +151,12 @@ userSchema.methods.createEmailVerifyToken = function () {
   return resetToken;
 };
 
-// //populating courses
-// userSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: "courses",
-//   });
-
-//   next();
-// });
+//displaying active users only.
+userSchema.pre(/^find/, function (next) {
+  //this refers to the current query
+  this.find({ active: { $ne: false } });
+  next();
+});
 
  //model
 const User = mongoose.model("User", userSchema);
