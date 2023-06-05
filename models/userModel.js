@@ -151,16 +151,16 @@ userSchema.methods.createEmailVerifyToken = function () {
   return resetToken;
 };
 
-//populating courses
-userSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "courses",
-  });
+// //populating courses
+// userSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: "courses",
+//   });
 
-  next();
-});
+//   next();
+// });
 
-//model
+ //model
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+ module.exports = User;

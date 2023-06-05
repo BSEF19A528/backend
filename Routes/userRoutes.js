@@ -32,11 +32,11 @@ router.patch(
   userController.updateMe
 );
 
-//get all users
-router.get("/", userController.getAllUsers);
+// //get all users
+// router.get("/", userController.getAllUsers);
 
-//get one users
-router.get("/:id", userController.getOneUser);
+// //get one users
+// router.get("/:id", userController.getOneUser);
 
 //exporting
 module.exports = router;
