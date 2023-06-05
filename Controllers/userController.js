@@ -131,3 +131,13 @@ exports.getOneUser = async (req, res, next) => {
     },
   });
 };
+
+//For Teacher to delete course
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(200).json({
+    status: "success",
+    data: null,
+  });
+});

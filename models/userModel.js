@@ -151,12 +151,10 @@ userSchema.methods.createEmailVerifyToken = function () {
   return resetToken;
 };
 
-//populating courses
+//displaying active users only.
 userSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "courses",
-  });
-
+  //this refers to the current query
+  this.find({ active: { $ne: false } });
   next();
 });
 

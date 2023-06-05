@@ -66,13 +66,5 @@ router.get("/viewAllCourses", courseController.viewAllCourses);
 //get all courses
 router.get("/viewOneCourse/:id", courseController.viewOneCourse);
 
-//enroll course
-// router.post(
-//   "/enrollCourse",
-//   authController.protect,
-//   authController.restrictTo("student"),
-//   courseController.enrollCourse
-// );
-
 //exporting
 module.exports = router;
